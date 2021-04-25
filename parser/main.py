@@ -3,6 +3,7 @@ from typing import final
 from bs4 import BeautifulSoup
 from requests import get
 
+
 @final
 class ProjectDecorators:
     @classmethod
@@ -15,7 +16,7 @@ class ProjectDecorators:
 
 
 @final
-class HabrParser:
+class HabrPageParser:
     def __init__(self, url) -> None:
         self.url = url
         self.html = self.get_html(self.url)
@@ -45,7 +46,7 @@ class HabrParser:
 
 def main() -> None:
     url = "https://habr.com/ru/"
-    print(HabrParser(url).get_articles_names())
+    print(HabrPageParser(url).get_articles_names())
 
 
 if __name__ == "__main__":

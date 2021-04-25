@@ -2,18 +2,7 @@ from functools import wraps
 from typing import final
 from bs4 import BeautifulSoup
 from requests import get
-
-
-@final
-class ProjectDecorators:
-    @classmethod
-    def result_processing(self, function_to_decorate):
-        @wraps(function_to_decorate)
-        def wrapper(self):
-            return list(set(function_to_decorate(self)))
-
-        return wrapper
-
+from decorators import ProjectDecorators
 
 @final
 class HabrPageParser:

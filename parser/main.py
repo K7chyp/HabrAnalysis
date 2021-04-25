@@ -1,5 +1,3 @@
-from functools import wraps
-from typing import final
 from bs4 import BeautifulSoup
 from requests import get
 from decorators import ProjectDecorators

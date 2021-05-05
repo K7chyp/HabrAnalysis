@@ -1,12 +1,7 @@
 from typing import final
 from bs4 import BeautifulSoup
 from requests import get
-import csv
-from tqdm import trange
 from decorators import ProjectDecorators
-
-NaN = float("NaN")
-LAST_PAGE_NUMBER = 20
 
 
 @final
@@ -75,29 +70,3 @@ class HabrPageParser:
                     ]
             output_page[article] = local_dict
         return output_page
-
-
-def main() -> None:
-    for page_number in trange(1, LAST_PAGE_NUMBER):
-        url = f"https://habr.com/ru/all/top100/page{page_number}/"
-        output_result = HabrPageParser(url).result_post_processing()
-        with open("output.csv", "a") as csv_file:
-            writer = csv.writer(csv_file)
-            for article in output_result.keys():
-                if "Рейтинг" in output_result[article]:
-                    raiting = output_result[article]["Рейтинг"]
-                else:
-                    raiting = NaN
-                if "Закладки" in output_result[article]:
-                    bookmarks = output_result[article]["Закладки"]
-                else:
-                    bookmarks = NaN
-                if "Количество просмотров" in output_result[article]:
-                    viewers = output_result[article]["Количество просмотров"]
-                else:
-                    viewers = NaN
-                writer.writerow([article, raiting, bookmarks, viewers])
-
-
-if __name__ == "__main__":
-    main()

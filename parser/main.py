@@ -1,9 +1,12 @@
 from typing import final
 from bs4 import BeautifulSoup
 from requests import get
-from csv import writer
+import csv
 from tqdm import trange
 from decorators import ProjectDecorators
+
+NaN = float("NaN")
+LAST_PAGE_NUMBER = 20
 
 
 @final
@@ -59,7 +62,7 @@ class HabrPageParser:
             page_with_statistics[article] = post_statistics[statistics_index]
         return page_with_statistics
 
-    def dict_post_processing(self) -> dict:
+    def result_post_processing(self) -> dict:
         page: dict = self.make_dict_output_for_better_reading()
         output_page: dict = {}
         for article in page.keys():
@@ -75,8 +78,25 @@ class HabrPageParser:
 
 
 def main() -> None:
-    url = "https://habr.com/ru/all/top100/page1/"
-    print(HabrPageParser(url).dict_post_processing())
+    for page_number in trange(1, LAST_PAGE_NUMBER):
+        url = f"https://habr.com/ru/all/top100/page{page_number}/"
+        output_result = HabrPageParser(url).result_post_processing()
+        with open("output.csv", "a") as csv_file:
+            writer = csv.writer(csv_file)
+            for article in output_result.keys():
+                if "Рейтинг" in output_result[article]:
+                    raiting = output_result[article]["Рейтинг"]
+                else:
+                    raiting = NaN
+                if "Закладки" in output_result[article]:
+                    bookmarks = output_result[article]["Закладки"]
+                else:
+                    bookmarks = NaN
+                if "Количество просмотров" in output_result[article]:
+                    viewers = output_result[article]["Количество просмотров"]
+                else:
+                    viewers = NaN
+                writer.writerow([article, raiting, bookmarks, viewers])
 
 
 if __name__ == "__main__":

@@ -1,6 +1,8 @@
+from typing import final
 from bs4 import BeautifulSoup
 from requests import get
 from decorators import ProjectDecorators
+
 
 @final
 class HabrPageParser:
@@ -30,10 +32,37 @@ class HabrPageParser:
             output.append((title_count, count))
         return output
 
+    def stats_processing(self) -> dict:
+        post_statistics: list = self.get_stat()
+        dict_with_stats_and_title = {}
+        position = 0
+        for index, tuple_with_local_stats in enumerate(post_statistics, start=1):
+            if tuple_with_local_stats[0] == "Количество просмотров":
+                position += 1
+                dict_with_stats_and_title[str(position)] = tuple_with_local_stats
+            else:
+                if str(position) in dict_with_stats_and_title.keys():
+                    previous_tuple_with_stats = dict_with_stats_and_title[str(position)]
+                    new_tuple_with_stats = (
+                        previous_tuple_with_stats,
+                        tuple_with_local_stats,
+                    )
+                    dict_with_stats_and_title[str(position)] = new_tuple_with_stats
+        return dict_with_stats_and_title
+
+    def make_dict_output_for_better_reading(self) -> dict:
+        articles_names: list = self.get_articles_names()
+        post_statistics: dict = self.stats_processing()
+        page_with_statistics = {}
+        for article, statistics_index in zip(articles_names, post_statistics):
+            page_with_statistics[article] = post_statistics[statistics_index]
+        return page_with_statistics   
+        
+
 
 def main() -> None:
     url = "https://habr.com/ru/"
-    print(HabrPageParser(url).get_articles_names())
+    print(HabrPageParser(url).make_dict_output_for_better_reading())
 
 
 if __name__ == "__main__":

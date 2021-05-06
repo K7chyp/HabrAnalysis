@@ -4,9 +4,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.linear_model import SGDClassifier, LogisticRegressionCV
 from sklearn.metrics import accuracy_score, roc_auc_score, classification_report
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
 
 PATH_TO_STOPWORDS = ""
 QUANTILES_DIVIDE = 5
@@ -16,8 +13,15 @@ class LinearModels:
     def __init__(self, df, column):
         self.df = df.copy()
         self.X = self.df.article_names
-        self.y = self.df.viewers
+        self.column = column
+        self.y = self.df[column]
         self.stopwords_preparation()
+
+    def values_transforamtion(self):
+        pca = PCA(n_components=1)
+        self.y = pd.DataFrame(
+            pca.fit_transform(self.df[["raiting", "bookmarks", "viewers"]])
+        )
 
     def stopwords_preparation(self):
         STOPWORDS = open(PATH_TO_STOPWORDS)
@@ -28,6 +32,7 @@ class LinearModels:
         for interval in self.intervals:
             if y <= interval.right:
                 return interval
+                break
         return interval
 
     def model_preparation(self):
@@ -107,3 +112,12 @@ class LinearModels:
                 title=titles[i],
                 plot_num=i,
             )
+
+    def get_predict_for_sequence(self, sequence: str):
+        sequence = self.tf_vectorizer.transform([sequence])
+        interval_num = list(lin.logit_sgd.predict(x))[0]
+        return print(
+            "Predicted count of {} between {} and {}".format(
+                self.column, list(lin.intervals)[2].left, list(lin.intervals)[2].right
+            )
+        )

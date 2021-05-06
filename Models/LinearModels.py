@@ -6,6 +6,7 @@ from sklearn.linear_model import SGDClassifier, LogisticRegressionCV
 from sklearn.metrics import accuracy_score, roc_auc_score, classification_report
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 PATH_TO_STOPWORDS = ""
 QUANTILES_DIVIDE = 5
@@ -27,7 +28,6 @@ class LinearModels:
         for interval in self.intervals:
             if y <= interval.right:
                 return interval
-                break
         return interval
 
     def model_preparation(self):

@@ -5,6 +5,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.linear_model import SGDClassifier, LogisticRegressionCV
 from sklearn.metrics import accuracy_score, roc_auc_score, classification_report
 import matplotlib.pyplot as plt
+import pandas as pd
 
 PATH_TO_STOPWORDS = ""
 QUANTILES_DIVIDE = 5
@@ -16,12 +17,6 @@ class LinearModels:
         self.X = self.df.article_names
         self.y = self.df.viewers
         self.stopwords_preparation()
-
-    def values_transforamtion(self):
-        pca = PCA(n_components=1)
-        self.y = pd.DataFrame(
-            pca.fit_transform(self.df[["raiting", "bookmarks", "viewers"]])
-        )
 
     def stopwords_preparation(self):
         STOPWORDS = open(PATH_TO_STOPWORDS)

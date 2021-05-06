@@ -27,13 +27,10 @@ class WordCloudModel:
 
     def make_model(self):
         corpus, dictionary = self.work_with_corpus()
-
         ldamodel = models.ldamodel.LdaModel(
             corpus=corpus, id2word=dictionary, num_topics=10, passes=5
         )
-
         topics = ldamodel.show_topics(num_topics=10, num_words=100, formatted=False)
-
         return topics
 
     def plotwordcloud(self, topic_number):

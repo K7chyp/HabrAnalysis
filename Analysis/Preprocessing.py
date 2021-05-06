@@ -56,6 +56,8 @@ class TextPreprocessing:
     def __init__(self, df):
         self.df = df.copy()
         self.apply_changes()
+        self.lemmatization()
+        self.return_columns_order()
 
     def strip_punctuation(self, string):
         return re.sub(r"[^\w\s]", "", str(string).lower())
@@ -77,3 +79,8 @@ class TextPreprocessing:
         self.df["article_names_lemmatize"] = self.df["article_names"].progress_apply(
             lambda x: m.lemmatize(x)
         )
+
+    def return_columns_order(self):
+        cols = self.df.columns.to_list()
+        cols = cols[-1:] + cols[:-1]
+        self.df = self.df[cols].copy()

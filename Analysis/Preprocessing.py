@@ -1,4 +1,5 @@
 from random import randrange
+import numpy as np
 
 
 class ValuesPreprocessing:

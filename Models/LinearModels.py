@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.linear_model import SGDClassifier, LogisticRegressionCV
 from sklearn.metrics import accuracy_score, roc_auc_score, classification_report
-import pandas as pd 
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -119,9 +119,11 @@ class LinearModels:
 
     def get_predict_for_sequence(self, sequence: str):
         sequence = self.tf_vectorizer.transform([sequence])
-        interval_num = list(lin.logit_sgd.predict(x))[0]
+        interval_num = list(self.logit_sgd.predict(sequence))[0]
         return print(
             "Predicted count of {} between {} and {}".format(
-                self.column, list(lin.intervals)[2].left, list(lin.intervals)[2].right
+                self.column,
+                list(self.intervals)[interval_num].left,
+                list(self.intervals)[interval_num].right,
             )
         )

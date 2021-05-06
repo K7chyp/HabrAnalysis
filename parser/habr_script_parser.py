@@ -10,22 +10,17 @@ NAME_FOR_OUTPUT_FILE = str(input('Название файла для вывод�
 def main() -> None:
     for page_number in trange(1, LAST_PAGE_NUMBER + 1):
         url = f"https://habr.com/ru/all/top100/page{page_number}/"
-        output_result = HabrPageParser(url).result_post_processing()
+        parsed_page = HabrPageParser(url).result_post_processing()
+        raiting, bookmarks, viewers = NaN, NaN, NaN
         with open(f"{NAME_FOR_OUTPUT_FILE}.csv", "a") as csv_file:
             writer = csv.writer(csv_file)
-            for article in output_result.keys():
-                if "Рейтинг" in output_result[article]:
-                    raiting = output_result[article]["Рейтинг"]
-                else:
-                    raiting = NaN
-                if "Закладки" in output_result[article]:
-                    bookmarks = output_result[article]["Закладки"]
-                else:
-                    bookmarks = NaN
-                if "Количество просмотров" in output_result[article]:
-                    viewers = output_result[article]["Количество просмотров"]
-                else:
-                    viewers = NaN
+            for article in parsed_page.keys():
+                links_to_constants = [raiting, bookmarks, viewers]
+                for index, value in enumerate("Рейтинг", "Закладки", "Количество просмотров"): 
+                    if value in parsed_page[article]:
+                        links_to_constants[index] = parsed_page[article][value]
+                    else: 
+                        links_to_constants[index] = NaN
                 writer.writerow([article, raiting, bookmarks, viewers])
 
 

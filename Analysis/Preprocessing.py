@@ -58,7 +58,7 @@ class TextPreprocessing:
     def strip_punctuation(self, string):
         return re.sub(r"[^\w\s]", "", str(string).lower())
 
-    def delete_stopwords(text):
+    def delete_stopwords(self, text):
         stop = open(PATH_TO_RUSSIAN_STOPWORDS)
         with stop as f:
             stopwords = f.read().splitlines()

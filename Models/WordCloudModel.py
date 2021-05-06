@@ -1,9 +1,12 @@
+import numpy as np
 from gensim import models
 from gensim import corpora
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+from PIL import Image
 
 COUNT_OF_TOPICS = 5
+PATH_TO_IMAGE = ''
 
 
 class WordCloudModel:
@@ -11,7 +14,7 @@ class WordCloudModel:
         self.df = df.copy()
 
     def make_bigrams(self):
-        texts = self.df.article_names
+        texts = self.df.article_names_lemmatize
         bigram = models.Phrases(texts, min_count=3, threshold=5)
         bigram_mod = models.phrases.Phraser(bigram)
         return [bigram_mod[doc] for doc in texts]
@@ -34,18 +37,20 @@ class WordCloudModel:
         return topics
 
     def plotwordcloud(self, topic_number):
-
+        mask = np.array(Image.open(PATH_TO_IMAGE))
         topics = self.make_model()
         text = dict(topics[topic_number][1])
         wordcloud = WordCloud(
             background_color="white",
             max_words=100,
-            width=900,
-            height=900,
+            width=mask.shape[1],
+            height=mask.shape[0],
             collocations=False,
+            mask=mask
         )
         wordcloud = wordcloud.generate_from_frequencies(text)
         plt.figure(figsize=(15, 10))
+        plt.imshow(wordcloud, interpolation="bilinear")
         plt.title("Topic number {}".format(topic_number))
         plt.imshow(wordcloud, interpolation="bilinear")
         plt.axis("off")

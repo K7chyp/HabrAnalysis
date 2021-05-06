@@ -1,5 +1,10 @@
 from random import randrange
-import numpy as np
+from pymystem3 import Mystem
+from tqdm import tqdm
+
+tqdm.pandas()
+
+PATH_TO_RUSSIAN_STOPWORDS = ""
 
 
 class ValuesPreprocessing:
@@ -48,3 +53,25 @@ class ValuesPreprocessing:
 class TextPreprocessing:
     def __init__(self, df):
         self.df = df.copy()
+        self.apply_changes()
+
+    def strip_punctuation(self, string):
+        return re.sub(r"[^\w\s]", "", str(string).lower())
+
+    def delete_stopwords(text):
+        stop = open(PATH_TO_RUSSIAN_STOPWORDS)
+        with stop as f:
+            stopwords = f.read().splitlines()
+        text = text.split(" ")
+        return " ".join([word for word in text if word not in stopwords])
+
+    def apply_changes(self):
+        self.df["article_names"] = self.df["article_names"].apply(
+            lambda x: self.delete_stopwords(self.strip_punctuation(x))
+        )
+
+    def lemmatization(self):
+        m = Mystem()
+        self.df["article_names_lemmatize"] = self.df["article_names"].progress_apply(
+            lambda x: m.lemmatize(x)
+        )

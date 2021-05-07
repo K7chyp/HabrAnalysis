@@ -1,3 +1,7 @@
-pymystem3
+--upgrade pymystem3 
 tqdm 
-pandas
+--upgrade pandas 
+--upgrade seaborn
+--upgrade scikit-learn
+--upgrade gensim 
+--upgrade WordCloud 

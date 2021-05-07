@@ -2,6 +2,8 @@ from typing import final
 from bs4 import BeautifulSoup
 from requests import get
 from decorators import ProjectDecorators
+from selenium import webdriver
+import time
 
 
 @final

@@ -5,6 +5,6 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./:./
+      - ./:/home/nikita
     ports:
       - "8888:8888"

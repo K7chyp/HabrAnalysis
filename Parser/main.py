@@ -3,19 +3,20 @@ from bs4 import BeautifulSoup
 from requests import get
 from decorators import ProjectDecorators
 from selenium import webdriver
-import time
 
 
 @final
 class HabrPageParser:
     def __init__(self, url) -> None:
         self.url = url
-        self.html = self.get_html(self.url)
+        self.browser = webdriver.Chrome('/chromedriver')
+        self.get_html()
         self.soup = BeautifulSoup(self.html, "lxml")
         self.clear_page = self.soup.find("div")
 
-    def get_html(self, url: str) -> str:
-        return get(url).text
+    def get_html(self) -> str:
+        self.browser.get(self.url)
+        self.html = self.browser.page_source
 
     @ProjectDecorators.result_processing
     def get_articles_names(self) -> str:
